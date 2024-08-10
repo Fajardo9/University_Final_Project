@@ -1,0 +1,49 @@
+@startuml
+class University {
+    -List<Teacher> teachers
+    -List<Student> students
+    -List<Class> classes
+    +printAllProfessors()
+    +printAllClasses()
+    +createStudent(name: String, id: String, age: int, className: String)
+    +createClass(name: String, classroom: String, teacher: Teacher, students: List<Student>)
+    +listClassesByStudentId(id: String)
+}
+
+abstract class Teacher {
+    -name: String
+    -baseSalary: double
+    -subject: String
+    +calculateSalary(int hours, double baseSalaryPerHour): double
+
+}
+
+class FullTimeTeacher extends Teacher {
+    -experienceYears: int
+    +calculateSalary(): double
+}
+
+class PartTimeTeacher extends Teacher {
+    -activeHoursPerWeek: int
+    +calculateSalary(): double
+}
+
+class Student {
+    -name: String
+    -id: String
+    -age: int
+}
+
+class Class {
+    -name: String
+    -classroom: String
+    -teacher: Teacher
+    -students: List<Student>
+}
+
+University "1" *-- "many" Teacher
+University "1" *-- "many" Student
+University "1" *-- "many" Class
+Class "1" *-- "1" Teacher
+Class "1" *-- "many" Student
+@enduml
