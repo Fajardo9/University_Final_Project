@@ -1,29 +1,51 @@
-package community;
+package institution;
+
+import community.EmptyTeacher;
+import community.Student;
+import community.Teacher;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Class {
+public class UniversityClass {
     private String name = "";
     private String assignedClassroom = "";
     private Teacher teacher;
     private List<Student> students = new ArrayList<>();
     private LocalTime startTime;
 
-    public Class(String name) {
+    public UniversityClass(String name) {
         setClassName(name);
         setTeacher(new EmptyTeacher());
         setAssignedClassroom("Classroom not assigned");
+    }public UniversityClass(String name, Teacher addedTeacher) {
+        setClassName(name);
+        setTeacher(addedTeacher);
+        setAssignedClassroom("Classroom not assigned");
     }
-    public Class(String name, String assignedClassroom, Teacher teacher, List<Student> students) {
+    public UniversityClass(String name, String assignedClassroom) {
+        setClassName(name);
+        setAssignedClassroom(assignedClassroom);
+        setStartTime(LocalTime.now());
+    }
+    public UniversityClass(String name, String assignedClassroom, Teacher teacher, List<Student> studentsList) {
         setClassName(name);
         setAssignedClassroom(assignedClassroom);
         setTeacher(teacher);
-        setStudents(students);
+        setStudents(studentsList);
         setStartTime(LocalTime.now());
     }
+    public UniversityClass(String name, String assignedClassroom, Teacher teacher) {
+        setClassName(name);
+        setAssignedClassroom(assignedClassroom);
+        setTeacher(teacher);
+        setStudents(Collections.emptyList());
+        setStartTime(LocalTime.now());
+    }
+
 
     public  String getClassName(){
         return name;
@@ -70,5 +92,12 @@ public class Class {
 
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+    }
+    @Override
+    public String toString() {
+        return "The class " + getClassName() +
+                " has assigned the classroom "+ getAssignedClassroom() +
+                ", the teacher "+ getTeacher().getName()
+                + " and has " + students.size() + " students.";
     }
 }

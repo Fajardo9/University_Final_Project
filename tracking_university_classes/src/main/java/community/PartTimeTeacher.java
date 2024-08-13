@@ -3,7 +3,11 @@ package community;
 public class PartTimeTeacher extends Teacher{
     private int totalHoursPerMonth = 0;
     private double salaryPerWeek;
-    public PartTimeTeacher(){}
+    public PartTimeTeacher(String name,double salaryPerHour,int initialHours ){
+        super.setName(name);
+        super.setSalaryPerHour(salaryPerHour);
+        setTotalHoursPerMonth(initialHours);
+    }
 
     public int getTotalHoursPerMonth() {
         return totalHoursPerMonth;
@@ -26,7 +30,8 @@ public class PartTimeTeacher extends Teacher{
         setTotalHoursPerMonth(totalHoursPerMonth+hoursPerWeek);
     }
     @Override
-    public void calculateTotalSalary() {
+    public double calculateTotalSalary() {
         setTotalSalary(getSalaryPerHour()*getTotalHoursPerMonth());
+        return 0;
     }
 }

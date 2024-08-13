@@ -1,19 +1,27 @@
 package community;
 
 public abstract class Teacher {
-    private String name;
-    private double salary;
-    private String subject;
-
-    public abstract String getName();
-
-    public abstract void setName(String name);
-
-    public double getSalary() {
-        return salary;
+    protected String name = "";
+    private double salaryPerHour;
+    private double totalSalary;
+    private String subject = "";
+    public  String getName(){
+        return name;
     }
 
-    public abstract void calculateSalary(int hours, double salaryPerHour);
+    public  void setName(String name){
+        this.name = name;
+    };
+
+    public double getSalaryPerHour() {
+        return salaryPerHour;
+    }
+
+    public void setSalaryPerHour(double salaryPerHour) {
+        this.salaryPerHour = salaryPerHour;
+    }
+
+    public abstract double calculateTotalSalary();
 
     public String getSubject() {
         return subject;
@@ -21,5 +29,17 @@ public abstract class Teacher {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public double getTotalSalary() {
+        return totalSalary;
+    }
+
+    public void setTotalSalary(double totalSalary) {
+        this.totalSalary = totalSalary;
+    }
+    @Override
+    public String toString() {
+        return "Teacher: " + name + " of the subject: " + subject;
     }
 }

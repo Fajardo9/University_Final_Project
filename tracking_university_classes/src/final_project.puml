@@ -2,7 +2,8 @@
 class University {
     -List<Teacher> teachers
     -List<Student> students
-    -List<Class> classes
+    -List<UniversityClass> classes
+    +addTeacher()
     +printAllProfessors()
     +printAllClasses()
     +createStudent(name: String, id: String, age: int, className: String)
@@ -12,20 +13,24 @@ class University {
 
 abstract class Teacher {
     -name: String
-    -baseSalary: double
+    -baseSalaryPerHour: double
+    -totalSalary : double
     -subject: String
-    +calculateSalary(int hours, double baseSalaryPerHour): double
+    +calculateTotalSalary(int hours, double baseSalaryPerHour): double
 
 }
 
 class FullTimeTeacher extends Teacher {
     -experienceYears: int
-    +calculateSalary(): double
+    -{static} HOURS_PER_MONTH: int
+    +setExperienceYears(double yearsOfExperience)
+    +getExperienceYears(): double
 }
 
 class PartTimeTeacher extends Teacher {
     -activeHoursPerWeek: int
-    +calculateSalary(): double
+    -salaryPerWeek: double
+    +calculateSalaryPerWeek(): void
 }
 
 class Student {
