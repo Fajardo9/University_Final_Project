@@ -3,12 +3,17 @@ class University {
     -List<Teacher> teachers
     -List<Student> students
     -List<UniversityClass> classes
-    +addTeacher()
-    +printAllProfessors()
-    +printAllClasses()
+    +addTeacher(Teacher)
+    +printAllProfessors():String name
+    +printAllClasses():String
     +createStudent(name: String, id: String, age: int, className: String)
     +createClass(name: String, classroom: String, teacher: Teacher, students: List<Student>)
+    +listClasses():String
+    +listTeachers():String
     +listClassesByStudentId(id: String)
+    +listStudentLists():String
+    +addStudentToClass(String name, (String cName))
+
 }
 
 abstract class Teacher {
@@ -16,7 +21,12 @@ abstract class Teacher {
     -baseSalaryPerHour: double
     -totalSalary : double
     -subject: String
-    +calculateTotalSalary(int hours, double baseSalaryPerHour): double
+    +setName(String name)
+    +getName():String
+    +setSubject(String subject)
+    +getSubject():String
+    +abstract calculateTotalSalary(int hours, double baseSalaryPerHour): double
+    +toString():String
 
 }
 
@@ -35,20 +45,33 @@ class PartTimeTeacher extends Teacher {
 
 class Student {
     -name: String
-    -id: String
+    -{Static}ID: Int
+    -idAux: Int
     -age: int
+    +getName():String
+    +setName(String name)
+    +setAge(Int age)
+    +getAge():Int
+    -setID(int)
+    -generateID():int
+    +toString(): String
 }
 
 class Class {
-    -name: String
+    -className: String
     -classroom: String
     -teacher: Teacher
     -students: List<Student>
+    +setClassName(String cName)
+    +getClassName(): String
+    +setTeacher(Teacher)
+    +getTeacher():Teacher
+    +toString():String
 }
 
 University "1" *-- "many" Teacher
 University "1" *-- "many" Student
 University "1" *-- "many" Class
 Class "1" *-- "1" Teacher
-Class "1" *-- "many" Student
+Class "many" *-- "many" Student
 @enduml

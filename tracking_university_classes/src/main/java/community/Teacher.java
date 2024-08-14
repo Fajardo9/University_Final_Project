@@ -11,7 +11,7 @@ public abstract class Teacher {
 
     public  void setName(String name){
         this.name = name;
-    };
+    }
 
     public double getSalaryPerHour() {
         return salaryPerHour;
@@ -30,16 +30,11 @@ public abstract class Teacher {
     public void setSubject(String subject) {
         this.subject = subject;
     }
-
-    public double getTotalSalary() {
-        return totalSalary;
-    }
-
-    public void setTotalSalary(double totalSalary) {
+    protected void setTotalSalary(Double totalSalary) {
         this.totalSalary = totalSalary;
     }
     @Override
     public String toString() {
-        return "Teacher: " + name + " of the subject: " + subject;
+        return "Teacher: " + name + " of the subject: " + subject + "has the total salary of " + calculateTotalSalary();
     }
 }

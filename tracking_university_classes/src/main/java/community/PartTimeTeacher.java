@@ -13,6 +13,10 @@ public class PartTimeTeacher extends Teacher{
         return totalHoursPerMonth;
     }
 
+    public void addHours(int hours){
+        setTotalHoursPerMonth(getTotalHoursPerMonth() + hours);
+    }
+
     public void setTotalHoursPerMonth(int totalHoursPerMonth) {
         this.totalHoursPerMonth = totalHoursPerMonth;
     }
@@ -25,8 +29,8 @@ public class PartTimeTeacher extends Teacher{
         this.salaryPerWeek = salaryPerWeek;
     }
 
-    public void calculateWeeklySalary(int hoursPerWeek){
-        setSalaryPerWeek((hoursPerWeek * hoursPerWeek));
+    public void calculateWeekSalary(int hoursPerWeek){
+        setSalaryPerWeek((hoursPerWeek * getSalaryPerHour()));
         setTotalHoursPerMonth(totalHoursPerMonth+hoursPerWeek);
     }
     @Override

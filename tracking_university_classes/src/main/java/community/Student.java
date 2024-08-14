@@ -4,7 +4,7 @@ public class Student {
     private String name;
     private int age;
     private final int ID;
-    private static int idGen = 0;
+    private static int idAux = 0;
 
     public Student(String name, int age) {
         this.ID = generateID();
@@ -13,7 +13,7 @@ public class Student {
     }
 
     private synchronized int generateID() {
-        return idGen++;
+        return idAux++;
     }
 
     public String getName() {
@@ -38,7 +38,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student [ID= " + ID  + ", name= " + name + ", age=" + age + "]";
+        return "Student [ID= " + getId()  + ", name= " + getName() + ", age=" + getAge() + "]";
     }
 
 }

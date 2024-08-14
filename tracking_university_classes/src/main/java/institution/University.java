@@ -2,29 +2,28 @@ package institution;
 
 import community.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class University {
     private String name;
+    private HashMap<String, List<Student>> listStudentsList = new HashMap<>();
     private List<Teacher> teacherList = new ArrayList<>();
     private List<Student> studentList = new ArrayList<>();
     private List<UniversityClass> universityClassList = new ArrayList<>();
 
-    public University(String name, List<Teacher> teacherList, List<Student> studentList, List<UniversityClass> universityClassList) {
+    public University(String name, List<Teacher> teacherList, String nameOfStudentList,List<Student> studentList, List<UniversityClass> universityClassList) {
         setName(name);
         setTeacherList(teacherList);
         setStudentList(studentList);
+        addStudentList(nameOfStudentList,studentList);
         setClassList(universityClassList);
     }
     public University(String name){
         setName(name);
         setTeacherList(Collections.emptyList());
-        setStudentList(Collections.emptyList());
+        addStudentList("-",Collections.emptyList());
         setClassList(Collections.emptyList());
     }
 
@@ -51,6 +50,11 @@ public class University {
     public void setStudentList(List<Student> studentList) {
         this.studentList = studentList;
     }
+
+    public void addStudentList(String idOfTheStudentsGroup, List<Student> studentList) {
+        getStudentList().addAll(studentList);
+        this.listStudentsList.put(idOfTheStudentsGroup, studentList);
+    }
     public List<UniversityClass> getClasses() {
         return universityClassList;
     }
@@ -59,26 +63,47 @@ public class University {
     }
     private Optional<UniversityClass> getClassByName(String className) {
         String cName = className.trim().toLowerCase();
-        return universityClassList.stream().filter(c -> c.getClassName().trim().toLowerCase()
+        return getClasses().stream().filter(c -> c.getClassName().trim().toLowerCase()
                 .equals(cName)).findFirst();
     }
     private Optional<Student> getStudentByName(String studentName) {
         String s = studentName.trim().toLowerCase();
-        return studentList.stream().filter(p -> p.getName().trim().toLowerCase().
+        return getStudentList().stream().filter(p -> p.getName().trim().toLowerCase().
                 equals(s)).findFirst();
     }
     private Optional<Teacher> getTeacherByName(String teacherName) {
         String teacherSelected = teacherName.trim().toLowerCase();
-        return teacherList.stream().filter(t -> t.getName().trim()
+        return getTeacherList().stream().filter(t -> t.getName().trim()
                 .toLowerCase().equals(teacherSelected)).findFirst();
     }
-    public String getInfoClassByName(String className){
+    public String getClassInfoByName(String className){
         Optional<UniversityClass> optionalClass = getClassByName(className);
         if(optionalClass.isPresent()){
             UniversityClass c = optionalClass.get();
             return c.toString();
         }else return "Class not found";
     }
+    public String getTeacherInfoByName(String teacherName){
+        Optional<Teacher> optionalTeacher = getTeacherByName(teacherName);
+        if(optionalTeacher.isPresent()){
+            Teacher t = optionalTeacher.get();
+            return t.toString();
+        }else return "Teacher not found";
+    }
+    public String getStudentInfoByName(String studentName){
+        Optional<Student> optionalStudent = getStudentByName(studentName);
+        if(optionalStudent.isPresent()){
+            Student s = optionalStudent.get();
+            return s.toString();
+        }else return "Student not found";
+    }
+    private List<Student> getStudentListById(String  idList){
+        List<Student> optionalStudentList = listStudentsList.get(idList);
+        if(optionalStudentList == null || optionalStudentList.isEmpty()){
+            return Collections.emptyList();
+        }else return optionalStudentList;
+    }
+
     public String modifyClass(String className, String newClassroom){
         Optional<UniversityClass> c = getClassByName(className);
         if (c.isPresent()) {
@@ -89,12 +114,16 @@ public class University {
         }
     }
 
-    public void addClass(String className, String classroomName, String teacherName, String groupOfStudentName) {
+    public void addClass(String className, String classroomName, String teacherName, String idOfTheStudentList) {
         Optional<Teacher> teacherAssigned = getTeacherByName(teacherName);
-        if (teacherAssigned.isPresent()) {
+        List<Student> listOfStudentAssign = getStudentListById(idOfTheStudentList);
+        if (teacherAssigned.isPresent() && !listOfStudentAssign.isEmpty() ) {
             Teacher teacher = teacherAssigned.get();
-            universityClassList.add(new UniversityClass(className,classroomName,teacher));
-        } else {
+            universityClassList.add(new UniversityClass(className,classroomName,teacher, listOfStudentAssign));
+        } else if(teacherAssigned.isPresent()){
+            Teacher teacher = teacherAssigned.get();
+            universityClassList.add(new UniversityClass(className,classroomName, teacher));
+        }else {
             System.out.println("Teacher not found");
         }
     }public void addClass(String className, String teacherName) {
@@ -124,7 +153,7 @@ public class University {
         studentList.add(new Student(name, age));
     }
     public String assignTeacher(String teacherName, String className) {
-        String message = "";
+        String message;
         Optional<Teacher> optionalTeacher = getTeacherByName(teacherName);
         Optional<UniversityClass> optionalUniversityClass = getClassByName(className);
         if(optionalTeacher.isPresent() && optionalUniversityClass.isPresent()) {
@@ -135,7 +164,7 @@ public class University {
                 c.setTeacher(t);
                 message = String.format("Teacher %s has been assigned to %s", teacherName, className);
             }else {
-                message = "The teacher: " + t.getName() + " already has an subject asigned  ";
+                message = "The teacher: " + t.getName() + " already has an subject assigned  ";
             }
         }else if (!optionalTeacher.isPresent()) {
             message = "The teacher " + teacherName + " does not exist";
@@ -157,25 +186,34 @@ public class University {
         return studentList.stream().map(Student::toString)
                 .collect(Collectors.joining("\n"));
     }
-    public String listClassByStudent(String student) {
+    public String listClassesByStudent(String student) {
         Optional<Student> optionalStudent = getStudentByName(student);
-        List<String> studentClasses = new ArrayList<>();
-
+        StringBuilder result = new StringBuilder();
         if (optionalStudent.isPresent()) {
             Student selectedStudent = optionalStudent.get();
-            studentClasses.add( "The classes enrolled for the student " + selectedStudent.getName() +
-                    " are as follows: \n");
-            List<UniversityClass> enrolledUniversityClasses = universityClassList.stream().filter(c -> getStudentList().contains(selectedStudent)).
-                    collect(Collectors.toList());
-            studentClasses.addAll(enrolledUniversityClasses.stream().map(c -> "Class Name: "+ c.getClassName() +
-                            " classroom: " + c.getAssignedClassroom() +
-                            " Teacher assigned: " + c.getTeacher().getName()).collect(Collectors.toList()));
+            result.append("The classes enrolled for the student ").
+                    append(selectedStudent.getName()).append(" are as follows:\n");
 
-            return String.join("\n", studentClasses);
+            List<UniversityClass> enrolledUniversityClasses = universityClassList.stream()
+                    .filter(c -> getStudentList().contains(selectedStudent))
+                    .collect(Collectors.toList());
 
-        }else{
+            enrolledUniversityClasses.forEach(c -> result.append("Class Name: ").append(c.getClassName())
+                    .append(" classroom: ").append(c.getAssignedClassroom())
+                    .append(" Teacher assigned: ").append(c.getTeacher().getName()).append("\n"));
+
+            return result.toString();
+        } else {
             return "Student not found";
         }
+    }
+    public String listStudentLists(){
+        StringBuilder listOfAvailableStudentsList = new StringBuilder();
+        listOfAvailableStudentsList.append("Available Students List:\n");
+        for(String listName : listStudentsList.keySet()){
+            listOfAvailableStudentsList.append("The list ").append(listName).append("\n");
+        }
+        return listOfAvailableStudentsList.toString();
     }
 
     public String addStudentToClass(String cName, String studentName) {

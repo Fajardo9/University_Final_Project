@@ -2,7 +2,7 @@ package community;
 
 public class EmptyTeacher extends Teacher {
     public EmptyTeacher() {
-        setName("Teacher not Asigned");
+        setName("Teacher not Assigned");
         setSalaryPerHour(0);
         setTotalSalary(calculateTotalSalary());
     }

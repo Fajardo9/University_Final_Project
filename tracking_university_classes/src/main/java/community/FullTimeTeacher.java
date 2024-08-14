@@ -14,7 +14,6 @@ public class FullTimeTeacher extends Teacher{
 
     public final int HOURS_PER_MONTH = 160;
 
-    public FullTimeTeacher(String name, double salaryPerHour, int experienceYears, String subject) {}
     public FullTimeTeacher(String name, double salaryPerHour, int experienceYears) {
         super.setName(name);
         super.setSalaryPerHour(salaryPerHour);
@@ -25,7 +24,10 @@ public class FullTimeTeacher extends Teacher{
 
     @Override
     public double calculateTotalSalary() {
-        return (getBaseSalary())*(experienceYears *1.1);
+        if(experienceYears > 0){
+            return (getBaseSalary())*(getExperienceYears() *1.1);
+        }
+        else  return getBaseSalary();
     }
 
     public int getExperienceYears() {
